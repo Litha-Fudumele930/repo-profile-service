@@ -1,0 +1,124 @@
+openapi: 3.0.3
+info:
+  description: API for exposing GitHub user and repository insights via Repo Profile
+  title: Repo Profile Service
+  version: 1.0.0
+servers:
+- description: Repo Profile Service
+  url: https://api.repoprofile.com
+paths:
+  /profiles/{username}:
+    post:
+      description: "Retrieve a user’s profile details along with their repositories\
+        \ sorted by stargazers count, including language breakdowns."
+      operationId: getProfile
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+          description: Successful response
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad Request – invalid or missing username
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error – unexpected failure when querying GitHub
+      summary: Retrieve user profile and repositories
+      tags:
+      - profiles
+      x-accepts: application/json
+      x-tags:
+      - tag: profiles
+components:
+  schemas:
+    UserProfileResponse:
+      example:
+        followers: 6
+        avatar_url: avatar_url
+        repositories:
+        - full_name: full_name
+          stargazers_count: 5
+          html_url: html_url
+          name: name
+          language: language
+          id: 1
+          frequent_language: frequent_language
+        - full_name: full_name
+          stargazers_count: 5
+          html_url: html_url
+          name: name
+          language: language
+          id: 1
+          frequent_language: frequent_language
+        bio: bio
+        publicRepos: 0
+        username: username
+      properties:
+        username:
+          type: string
+        bio:
+          type: string
+        avatar_url:
+          type: string
+        publicRepos:
+          type: integer
+        followers:
+          type: integer
+        repositories:
+          items:
+            $ref: '#/components/schemas/Repository'
+          type: array
+      type: object
+    Repository:
+      example:
+        full_name: full_name
+        stargazers_count: 5
+        html_url: html_url
+        name: name
+        language: language
+        id: 1
+        frequent_language: frequent_language
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        full_name:
+          type: string
+        language:
+          type: string
+        stargazers_count:
+          type: integer
+        html_url:
+          type: string
+        frequent_language:
+          type: string
+      type: object
+    ErrorResponse:
+      properties:
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+      type: object

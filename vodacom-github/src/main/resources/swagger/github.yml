@@ -1,0 +1,116 @@
+openapi: 3.0.3
+info:
+  title: GitHub User Info API
+  description: OpenAPI spec for fetching GitHub user profile, repos (sorted by stars), and languages
+  version: "1.1.0"
+servers:
+  - url: https://api.github.com
+    description: GitHub API Server
+
+paths:
+  /users/{username}:
+    get:
+      operationId: getUserProfile
+      summary: Get user profile
+      description: Retrieve profile details for a GitHub user.
+      tags:
+        - users
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfileDTO"
+
+  /users/{username}/repos:
+    get:
+      operationId: getUserRepositories
+      summary: List user repositories
+      description: Retrieve repositories owned by a GitHub user, with optional sorting.
+      tags:
+        - users
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RepositoryDTO"
+
+  /repos/{owner}/{repo}/languages:
+    get:
+      operationId: getRepoLanguages
+      summary: Get repository languages
+      description: Retrieve detailed language usage for a repository.
+      tags:
+        - users
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+                  description: Byte count of code written in the language
+
+components:
+  schemas:
+    UserProfileDTO:
+      type: object
+      properties:
+        login:
+          type: string
+        name:
+          type: string
+        bio:
+          type: string
+        avatar_url:
+          type: string
+        public_repos:
+          type: integer
+        followers:
+          type: integer
+
+    RepositoryDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        full_name:
+          type: string
+        language:
+          type: string
+        stargazers_count:
+          type: integer
+        html_url:
+          type: string

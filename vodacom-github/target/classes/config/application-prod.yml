@@ -1,0 +1,53 @@
+logging:
+  level:
+    root: INFO
+    za.co.vodacom: INFO
+    # 3. SILENCED: Explicitly set Hibernate SQL logging to WARN/ERROR
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  cloud:
+    config:
+      enabled: true
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888}
+      profile: prod
+      label: ${CONFIG_LABEL:main}
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/repoprofile_db}
+    username: ${SPRING_DATASOURCE_USERNAME:prod_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:your_secure_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  jpa:
+    # 1. DISABLED: Prevents Spring from dumping SQL to System.out
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        # 2. DISABLED: Prevents multiline pretty-printing and comments in logs
+        format_sql: false
+        use_sql_comments: false
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoint:
+    health:
+      show-details: when_authorized
+
+application:
+  github:
+    url: https://api.github.com/
+    feignClientName: github

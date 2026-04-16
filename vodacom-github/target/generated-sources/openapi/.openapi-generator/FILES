@@ -1,0 +1,5 @@
+README.md
+pom.xml
+src/main/java/za/vodacom/repoprofile/client/github/UsersApi.java
+src/main/java/za/vodacom/repoprofile/dto/github/RepositoryDTO.java
+src/main/java/za/vodacom/repoprofile/dto/github/UserProfileDTO.java

@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: Repo Profile Service
+  description: API for exposing GitHub user and repository insights via Repo Profile
+  version: "1.0.0"
+servers:
+  - url: https://api.repoprofile.com
+    description: Repo Profile Service
+
+paths:
+  /profiles/{username}:
+    post:
+      operationId: getProfile
+      summary: Retrieve user profile and repositories
+      description: Retrieve a user’s profile details along with their repositories sorted by stargazers count, including language breakdowns.
+      tags:
+        - profiles
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfileResponse"
+        "400":
+          description: Bad Request – invalid or missing username
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error – unexpected failure when querying GitHub
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    UserProfileResponse:
+      type: object
+      properties:
+        username:
+          type: string
+        bio:
+          type: string
+        avatar_url:
+          type: string
+        publicRepos:
+          type: integer
+        followers:
+          type: integer
+        repositories:
+          type: array
+          items:
+            $ref: "#/components/schemas/Repository"
+
+    Repository:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        full_name:
+          type: string
+        language:
+          type: string
+        stargazers_count:
+          type: integer
+        html_url:
+          type: string
+        frequent_language:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
