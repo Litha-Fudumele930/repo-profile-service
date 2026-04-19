@@ -8,19 +8,24 @@ servers:
     description: Repo Profile Service
 
 paths:
-  /profiles/{username}:
+  /profiles:
     post:
       operationId: getProfile
       summary: Retrieve user profile and repositories
-      description: Retrieve a user’s profile details along with their repositories sorted by stargazers count, including language breakdowns.
+      description: Retrieve a user’s profile details along with their repositories.
       tags:
         - profiles
-      parameters:
-        - name: username
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+              required:
+                - username
       responses:
         "200":
           description: Successful response
@@ -28,21 +33,64 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserProfileResponse"
-        "400":
-          description: Bad Request – invalid or missing username
+        "400": &ErrorRef
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: Internal Server Error – unexpected failure when querying GitHub
+          <<: *ErrorRef
+          description: Internal Server Error
+
+    get:
+      operationId: listProfiles
+      summary: List profiles with pagination
+      description: Returns an object containing a list of profiles with basic information.
+      tags:
+        - profiles
+      parameters:
+        - name: page
+          description: the number of users to return per page
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: since
+          description: parameter used for pagination to fetch users starting from a specific, numerical user ID
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: A list of profiles wrapped in an object
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProfileSummary"
 
 components:
   schemas:
+    ProfileSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          type: string
+        avatar:
+          type: string
+        url:
+          type: string
+
     UserProfileResponse:
       type: object
       properties:

@@ -17,7 +17,6 @@ import za.vodacom.repoprofile.repository.UserRepositoriesRepository;
 import za.vodacom.repoprofile.service.GithubService;
 import za.vodacom.repoprofile.service.ProfilesService;
 import za.vodacom.repoprofile.service.mapper.RepositoryMapper;
-import za.vodacom.repoprofile.utils.Validator;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -109,7 +108,6 @@ public class ProfilesServiceImpl implements ProfilesService {
         return profileResponse;
     }
 
-    // --- NEW METHOD: Logic for API DTOs ---
     private String calculateFrequentLanguage(List<RepositoryDTO> list) {
         if (list == null || list.isEmpty()) return "Unknown";
 

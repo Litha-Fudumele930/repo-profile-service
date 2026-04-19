@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.vodacom.repoprofile.client.github.GitHubApiClient;
+import za.vodacom.repoprofile.dto.github.ProfileSummaryDTO;
 import za.vodacom.repoprofile.dto.github.RepositoryDTO;
 import za.vodacom.repoprofile.dto.github.UserProfileDTO;
 import za.vodacom.repoprofile.service.GithubService;
@@ -52,5 +53,22 @@ public class GithubServiceImpl implements GithubService {
         }
 
         return repositoryDTOList;
+    }
+
+    @Override
+    public List<ProfileSummaryDTO> listUsers(Integer since, Integer page) throws Exception {
+
+        log.debug("Get list of users from github");
+        List<ProfileSummaryDTO> summaryDTOList;
+
+      try{
+
+          summaryDTOList =  gitHubApiClient.listUsers(since,page).getBody();
+      } catch (Exception e) {
+          log.error("Feign error caught - {}", e.getMessage());
+          throw new Exception("Failed to query Github - " + e.getMessage());
+      }
+
+      return summaryDTOList;
     }
 }
