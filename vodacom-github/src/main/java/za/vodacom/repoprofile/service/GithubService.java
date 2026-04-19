@@ -1,5 +1,6 @@
 package za.vodacom.repoprofile.service;
 
+import za.vodacom.repoprofile.dto.github.ProfileSummaryDTO;
 import za.vodacom.repoprofile.dto.github.RepositoryDTO;
 import za.vodacom.repoprofile.dto.github.UserProfileDTO;
 
@@ -11,4 +12,6 @@ public interface GithubService {
     UserProfileDTO getGithubUser(String username) throws Exception;
 
     List<RepositoryDTO> getAllPublicRepos(String username) throws Exception;
+
+    List<ProfileSummaryDTO> listUsers(Integer since, Integer page) throws Exception;
 }
