@@ -1,7 +1,9 @@
 package za.vodacom.repoprofile.service.mapper;
 
 import za.vodacom.repoprofile.domain.UserRepositories;
+import za.vodacom.repoprofile.dto.ProfileSummary;
 import za.vodacom.repoprofile.dto.Repository;
+import za.vodacom.repoprofile.dto.github.ProfileSummaryDTO;
 import za.vodacom.repoprofile.dto.github.RepositoryDTO;
 
 import java.util.Comparator;
@@ -44,5 +46,16 @@ public class RepositoryMapper {
                 })
                 .sorted(Comparator.comparingInt(Repository::getStargazersCount).reversed()) // add sorting if needed
                 .collect(Collectors.toList());
+    }
+
+    public static List<ProfileSummary> mapProfileSummaries(List<ProfileSummaryDTO> profileSummaryDTOList){
+        return profileSummaryDTOList.stream().map( dto->{
+            ProfileSummary summary = new ProfileSummary();
+            summary.setId(dto.getId());
+            summary.setAvatar(dto.getAvatarUrl());
+            summary.setUrl(dto.getHtmlUrl());
+            summary.setUser(dto.getLogin());
+            return summary;
+                }).collect(Collectors.toList());
     }
 }
